@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		448CA2AC1CA139F200935D84 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 448CA2AB1CA139F200935D84 /* main.cpp */; };
+		448CA2B41CA13A0400935D84 /* SLE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 448CA2B21CA13A0400935D84 /* SLE.cpp */; };
+		448CA2B71CA13A1000935D84 /* Matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 448CA2B51CA13A1000935D84 /* Matrix.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,10 @@
 /* Begin PBXFileReference section */
 		448CA2A81CA139F200935D84 /* cp_2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cp_2; sourceTree = BUILT_PRODUCTS_DIR; };
 		448CA2AB1CA139F200935D84 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		448CA2B21CA13A0400935D84 /* SLE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SLE.cpp; sourceTree = "<group>"; };
+		448CA2B31CA13A0400935D84 /* SLE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLE.h; sourceTree = "<group>"; };
+		448CA2B51CA13A1000935D84 /* Matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix.cpp; sourceTree = "<group>"; };
+		448CA2B61CA13A1000935D84 /* Matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,10 @@
 			isa = PBXGroup;
 			children = (
 				448CA2AB1CA139F200935D84 /* main.cpp */,
+				448CA2B21CA13A0400935D84 /* SLE.cpp */,
+				448CA2B31CA13A0400935D84 /* SLE.h */,
+				448CA2B51CA13A1000935D84 /* Matrix.cpp */,
+				448CA2B61CA13A1000935D84 /* Matrix.h */,
 			);
 			path = cp_2;
 			sourceTree = "<group>";
@@ -118,6 +128,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				448CA2B71CA13A1000935D84 /* Matrix.cpp in Sources */,
+				448CA2B41CA13A0400935D84 /* SLE.cpp in Sources */,
 				448CA2AC1CA139F200935D84 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
