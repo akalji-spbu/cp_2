@@ -34,9 +34,11 @@ unsigned PLU(Matrix &A, Matrix &P,Matrix &L, Matrix &U){
                 pivot = row;
             }
         }
-        P.SwapRows(pivot, i);
-        A.SwapRows(pivot, i);
-        SwapsNum++;
+        if(pivot!=i){
+            P.SwapRows(pivot, i);
+            A.SwapRows(pivot, i);
+            SwapsNum++;
+        }
         double tmp1,tmp2;
         for(unsigned j = i+1; j < m; j++){
             tmp1 = A.Get(j,i)/A.Get(i,i);
@@ -76,7 +78,6 @@ double det(Matrix &U, unsigned SwapsNum){
         return det;
     else
         return -det;
-    
 }
 
 

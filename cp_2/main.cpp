@@ -11,7 +11,7 @@
 #include "SLE.h"
 
 int main(int argc, const char * argv[]) {
-    std::ifstream infile("/Users/akalji/Desktop/matrix1.txt");
+    std::ifstream infile("/Users/akalji/Downloads/matrix1.txt");
     Matrix A(infile);
     A.Show();
     Matrix P(A.Get_vsize(),A.Get_hsize());
@@ -25,14 +25,6 @@ int main(int argc, const char * argv[]) {
     
     double det1 = det(U, Swaps);
 
-
-    P.Show();
-    L.Show();
-    U.Show();
-    
-    R = multiply(P, L);
-    T = multiply(R, U);
-    T.Show();
     std::cout<<"Det A = "<<det1<<std::endl;
     
     return 0;
