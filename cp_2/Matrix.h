@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <random>
 
 class Matrix{
 private:
@@ -25,18 +26,20 @@ public:
     Matrix(Matrix const &A);
     Matrix();
     Matrix(unsigned N);
+    Matrix(unsigned v, unsigned h, unsigned min, unsigned max);
+    
     
     Matrix operator * (const Matrix& B) const;
     
     void Add(int i, int j, double value);
-    int Get_vsize();
-    int Get_hsize();
-    void Show();
-    double Get(int i, int j);
+    int Get_vsize() const;
+    int Get_hsize() const;
+    void Show() const;
+    double Get(int i, int j) const;
     void SwapRows(int p, int i);
 };
 
-Matrix multiply(Matrix &A, Matrix &B);
+double r_random(double min, double max);
 
 
 #endif /* Matrix_hpp */

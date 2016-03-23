@@ -21,11 +21,21 @@ int main(int argc, const char * argv[]) {
     Matrix R;
     Matrix T;
     
+
+    
     unsigned Swaps=PLU(A, P, L, U);
+    L.Show();
+    U.Show();
+    
+    R=P*L*U;
+    
+    R.Show();
     
     double det1 = det(U, Swaps);
 
     std::cout<<"Det A = "<<det1<<std::endl;
+    
+    std::cout<<r_random(-100,100);
     
     return 0;
 }
