@@ -66,17 +66,21 @@ Matrix::Matrix(unsigned v, unsigned h, unsigned min, unsigned max){
     this->vsize = v;
     this->hsize  = h;
     this->M = new double*[this->vsize];
-    for(int i=0; i<this->vsize;i++){
+    for(int i=0; i<this->vsize;i++)
         this->M[i]=new double[this->hsize];
-    }
+
     for(unsigned i=0;i<v;i++)
         for(unsigned j=0;j<h;j++)
             M[i][j]=r_random(min, max);
 }
 
+Matrix::~Matrix(){
+
+}
+
 double r_random(double min, double max){
-    min = min+0.1;
-    max = max-0.1;
+    min = min+0.0000001;
+    max = max-0.0000001;
     std::random_device rd;
     std::uniform_int_distribution<double> uid(min, max);
     return uid(rd);
@@ -98,27 +102,16 @@ void Matrix::Add(int i, int j, double value){
     }
 }
 
-double Matrix::Get(int i, int j) const{
-    return this->M[i][j];
-}
 
-void Matrix::Show() const{
-    for(int i=0;i<this->vsize;i++){
-        for(int j=0;j<this->hsize;j++){
-            std::cout << this->M[i][j] << "\t";
-        }
-        std::cout<<std::endl;
-    }
-    std::cout<<std::endl;
-}
-
-void Matrix::SwapRows(int k, int i){
-    double tmp;
-    for(int j=0;j<this->hsize;j++){
-        tmp=M[i][j];
-        M[i][j]=M[k][j];
-        M[k][j]=tmp;
-    }
+Matrix Matrix::operator- (const Matrix& A) const{
+    if (this->Get_vsize() != A.Get_vsize() || this->Get_hsize() != A.Get_hsize()) throw;
+    Matrix B(this->Get_vsize(),this->Get_hsize());
+    
+    for (int i = 0; i < this->Get_vsize(); ++i)
+        for (int j = 0; j < this->Get_hsize(); ++j)
+            B.Add(i,j, this->Get(i,j) - A.Get(i,j));
+    
+    return B;
 }
 
 Matrix Matrix::operator*(const Matrix &B) const {
@@ -141,17 +134,53 @@ Matrix Matrix::operator*(const Matrix &B) const {
     }
     
     if(aHsize==bVsize){
-        std::cout<<"Multipliing"<<std::endl;
-        
         for(unsigned i = 0; i < aVsize; i++)
             for(unsigned j = 0; j < bHsize; j++)
                 for(unsigned k = 0; k < aHsize; k++){
                     double tmp = res.Get(i, j)+Get(i, k) * B.Get(k,j);
                     res.Add(i, j, tmp);
                 }
-        
-        
     }
     return res;
 }
+
+
+double Matrix::Get(int i, int j) const{
+    return this->M[i][j];
+}
+
+
+
+void Matrix::Show() const{
+    for(int i=0;i<this->vsize;i++){
+        for(int j=0;j<this->hsize;j++){
+            std::cout << this->M[i][j] << "\t \t";
+        }
+        std::cout<<std::endl;
+    }
+    std::cout<<std::endl;
+}
+
+void Matrix::SwapColumns(unsigned a, unsigned b){
+    unsigned N = this->Get_vsize();
+    if (a>N || b>N) throw;
+    double tmp;
+    for (int i = 0; i < N; ++i){
+        tmp = M[i][a];
+        M[i][a] = M[i][b];
+        M[i][b] = tmp;
+    }
+    return;
+}
+
+void Matrix::SwapRows(unsigned a, unsigned b){
+    if (a == b) return;
+    double * tmp = M[a];
+    M[a] = M[b];
+    M[b] = tmp;
+    return;
+}
+
+
+
 #endif /* Matrix_cpp */

@@ -10,7 +10,6 @@
 #ifndef Matrix_hpp
 #define Matrix_hpp
 
-
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -28,15 +27,20 @@ public:
     Matrix(unsigned N);
     Matrix(unsigned v, unsigned h, unsigned min, unsigned max);
     
+    ~Matrix();
+    
     
     Matrix operator * (const Matrix& B) const;
+    Matrix operator - (const Matrix& A) const;
     
     void Add(int i, int j, double value);
     int Get_vsize() const;
     int Get_hsize() const;
     void Show() const;
     double Get(int i, int j) const;
-    void SwapRows(int p, int i);
+    Matrix transpose() const;
+    void SwapRows(unsigned a, unsigned b);
+    void SwapColumns(unsigned a, unsigned b);
 };
 
 double r_random(double min, double max);
