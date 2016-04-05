@@ -33,6 +33,7 @@ public:
     Matrix operator * (const Matrix& B) const;
     Matrix operator - (const Matrix& A) const;
     
+    Matrix& operator= (const Matrix& A);
     void Add(int i, int j, double value);
     int Get_vsize() const;
     int Get_hsize() const;

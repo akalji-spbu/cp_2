@@ -12,7 +12,7 @@
 #include "SLE.h"
 
 void P1P2LU(Matrix &A, Matrix &P, Matrix &Q, Matrix &L, Matrix &U, unsigned &rank, unsigned &swaps){
-    
+    swaps = 0;
     unsigned n = A.Get_vsize();
     unsigned m = A.Get_hsize();
     rank = n;
@@ -143,16 +143,16 @@ double det(Matrix &U, unsigned SwapsNum){
         return -det;
 }
 
-bool SOLE(Matrix &L, Matrix &U, Matrix &b, Matrix &x, int rank){
-    unsigned n = L.Get_vsize();
-    Matrix y(n, 1);
-    for (unsigned i = 0; i<n; ++i){
-        double tmp = b.Get(i,0);
-        for (unsigned j = 0; j<i; ++j)
+void SOLE(Matrix &L,Matrix &U,Matrix &b,Matrix &x,int rank){
+    unsigned n=L.Get_vsize();
+    Matrix y(n,1);
+    for (unsigned i=0; i<n;++i){
+        double tmp=b.Get(i,0);
+        for (unsigned j=0; j<i;++j)
             tmp = tmp-L.Get(i,j)*y.Get(j,0);
-        y.Add(i, 0, tmp/L.Get(i,i));
+        y.Add(i,0,tmp/L.Get(i,i));
     }
-    if (rank == n){
+    if (rank==n){
         for (int i = n-1; i >= 0; --i){
             double tmp = y.Get(i,0);
             for (unsigned j = n-1; j>i; --j)
@@ -161,43 +161,56 @@ bool SOLE(Matrix &L, Matrix &U, Matrix &b, Matrix &x, int rank){
         }
     }
     else{
-        bool res = false;
+        bool res=false;
         for (unsigned i=n-1;i>=rank;--i)
             if (fabs(y.Get(i,0))>=pow(10,-15)) res = true;
         if(res){
-            return false;
+            std::cout<<"SOLE incompatible"<<std::endl;
+            exit(0);
         }
         else {
-            for (int i = n - 1; i >= rank; --i)
-                x.Add(i,0,1);
-            for (int i = rank - 1; i >= 0; --i){
-                unsigned tmp = y.Get(i,0);
-                for (int j = n - 1; j > i; --j)
+            for (int i=n-1;i>=rank;--i) x.Add(i,0,1);
+            for (int i=rank-1; i>=0;--i){
+                double tmp=y.Get(i,0);
+                for (int j=n-1; j>i;--j)
                     tmp=tmp-U.Get(i,j)*x.Get(j,0);
                 x.Add(i,0,tmp/U.Get(i,i));
             }
         }
     }
-    return true;
 }
 
 void inverse(Matrix &L, Matrix &U, int rank, Matrix &inverse){
     int n = L.Get_vsize();
     Matrix *x, b(n,1), tmp(n,1);
     x = new Matrix[n];
-    for (int i = 0; i < n; ++i){
+    for (int i=0; i<n; ++i){
         b.Add(i,0,1);
         if (i>0) b.Add(i-1,0, 0);
         SOLE(L,U,b,tmp,rank);
-        x[i] = tmp;
+        x[i]=tmp;
+        x[i].Show();
     }
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < n; ++j)
-            inverse.Add(j,i,x[i].Get(j,0));
-}
+    
+    //for (int i = 0; i < n; ++i){
+        //std::cout<<"Xi test______________________\n";
+       // x[i].Show();}
+
+    
+    //std::cout<<"Get test\n";
+    for (int i = 0; i < n; ++i){
+        //std::cout<<"Xi test\n";
+        x[i].Show();
+        for (int j = 0; j < n; ++j){
+            
+            //std::cout<<x[i].Get(j,0)<<std::endl;
+        
+            inverse.Add(j,i,x[i].Get(j,0));}
+    }}
 
 double cond(Matrix& A, Matrix& inverse){
-    int num1 = 0, n = A.Get_vsize(), num2 = 0;
+    int  n = A.Get_vsize();
+    double num1 = 0, num2 = 0;
     double tmp = 0;
     for (int i = 0; i < n; ++i){
         tmp = 0;

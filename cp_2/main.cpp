@@ -64,10 +64,10 @@ int main(int argc, const char * argv[]) {
     infile.close();
     
     nB = P1*B;
-    if (!SOLE(L,U,nB,x,rank)) {
-        std::cout << "SOLE incompatible" << std::endl;
-        return 0;
-    }
+    SOLE(L,U,nB,x,rank);
+
+
+    
     x=P2*x;
     std::cout<<"X: "<<std::endl;
     std::cout<<"______________________________________________"<<std::endl;

@@ -181,6 +181,22 @@ void Matrix::SwapRows(unsigned a, unsigned b){
     return;
 }
 
+Matrix& Matrix::operator= (const Matrix& A){
+    
+    M = new double*[A.vsize];
+    vsize = A.vsize;
+    hsize = A.hsize;
+    
+    for (int i = 0; i < A.vsize; ++i)
+        M[i] = new double[A.hsize];
+    
+    for (int i = 0; i < A.vsize; ++i)
+        for (int j = 0; j < A.hsize; ++j)
+            M[i][j] = A.M[i][j];
+    
+    return *this;
+    
+}
 
 
 #endif /* Matrix_cpp */
