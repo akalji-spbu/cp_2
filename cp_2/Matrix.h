@@ -25,16 +25,16 @@ public:
     Matrix(Matrix const &A);
     Matrix();
     Matrix(unsigned N);
-    Matrix(unsigned v, unsigned h, unsigned min, unsigned max);
     
     ~Matrix();
     
     
     Matrix operator * (const Matrix& B) const;
     Matrix operator - (const Matrix& A) const;
+    Matrix operator + (const Matrix& A) const;
     
     Matrix& operator= (const Matrix& A);
-    void Add(int i, int j, double value);
+    void Add(unsigned i, unsigned j, double value);
     int Get_vsize() const;
     int Get_hsize() const;
     void Show() const;
@@ -42,9 +42,15 @@ public:
     Matrix transpose() const;
     void SwapRows(unsigned a, unsigned b);
     void SwapColumns(unsigned a, unsigned b);
+    void clear();
+    void insertDiag(double A);
+    double norm();
 };
 
 double r_random(double min, double max);
+void DiagonalizeMatrix(Matrix &M);
+void RandomizeMatrix(Matrix &M, double min, double max);
+Matrix transpose(Matrix &M);
 
 
 #endif /* Matrix_hpp */

@@ -26,7 +26,17 @@ Matrix::Matrix(std::ifstream& infile){
 }
 
 Matrix::Matrix(Matrix const &A){
-    
+    vsize = A.Get_vsize();
+    hsize = A.Get_hsize();
+    this->M = new double*[this->vsize];
+    for(int i=0; i<this->vsize;i++){
+        this->M[i]=new double[this->hsize];
+    }
+    for(int i=0;i<this->vsize;i++){
+        for(int j=0;j<this->hsize;j++){
+            this->M[i][j]=A.Get(i,j);
+        }
+    }
 }
 
 
@@ -47,43 +57,29 @@ Matrix::Matrix(int vsize, int hsize){
 Matrix::Matrix(unsigned N){
     this->vsize = N;
     this->hsize  = N;
-    this->M = new double*[this->vsize];
-    for(int i=0; i<this->vsize;i++){
-        this->M[i]=new double[this->hsize];
+    this->M = new double*[N];
+    for(int i=0; i<N;i++){
+        this->M[i]=new double[N];
     }
-    for(int i=0;i<this->vsize;i++){
-        for(int j=0;j<this->hsize;j++){
+    for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
             this->M[i][j]=0.0;
         }
     }
 }
 
+Matrix::~Matrix(){
+    if (M != nullptr) {
+        for (int i = 0; i < vsize; ++i)
+        {
+            if (M[i] != nullptr) delete[] M[i];
+        }
+        delete[] M;
+    }
+}
+
 Matrix::Matrix(){
 
-}
-
-Matrix::Matrix(unsigned v, unsigned h, unsigned min, unsigned max){
-    this->vsize = v;
-    this->hsize  = h;
-    this->M = new double*[this->vsize];
-    for(int i=0; i<this->vsize;i++)
-        this->M[i]=new double[this->hsize];
-
-    for(unsigned i=0;i<v;i++)
-        for(unsigned j=0;j<h;j++)
-            M[i][j]=r_random(min, max);
-}
-
-Matrix::~Matrix(){
-
-}
-
-double r_random(double min, double max){
-    min = min+0.0000001;
-    max = max-0.0000001;
-    std::random_device rd;
-    std::uniform_int_distribution<double> uid(min, max);
-    return uid(rd);
 }
 
 int Matrix::Get_vsize() const{
@@ -94,7 +90,7 @@ int Matrix::Get_hsize() const{
     return this->hsize;
 }
 
-void Matrix::Add(int i, int j, double value){
+void Matrix::Add(unsigned i, unsigned j, double value){
     if(i<=vsize && j<=hsize){
         this->M[i][j]=value;
     }else{
@@ -110,6 +106,17 @@ Matrix Matrix::operator- (const Matrix& A) const{
     for (int i = 0; i < this->Get_vsize(); ++i)
         for (int j = 0; j < this->Get_hsize(); ++j)
             B.Add(i,j, this->Get(i,j) - A.Get(i,j));
+    
+    return B;
+}
+
+Matrix Matrix::operator+ (const Matrix& A) const{
+    if (this->Get_vsize() != A.Get_vsize() || this->Get_hsize() != A.Get_hsize()) throw;
+    Matrix B(this->Get_vsize(),this->Get_hsize());
+    
+    for (int i = 0; i < this->Get_vsize(); ++i)
+        for (int j = 0; j < this->Get_hsize(); ++j)
+            B.Add(i,j, this->Get(i,j)+A.Get(i,j));
     
     return B;
 }
@@ -195,8 +202,70 @@ Matrix& Matrix::operator= (const Matrix& A){
             M[i][j] = A.M[i][j];
     
     return *this;
-    
 }
+
+
+void DiagonalizeMatrix(Matrix &M){
+    unsigned N = M.Get_vsize();
+        for(unsigned i=0;i<N;i++){
+            double tmp=0.0;
+            for(unsigned j=0;j<N;j++)
+                tmp+=fabs(M.Get(i, j));
+            if(M.Get(i, i)<0) M.Add(i, i, -tmp);
+            else M.Add(i, i, tmp);
+        }
+}
+
+void RandomizeMatrix(Matrix &M, double min, double max){
+    unsigned n = M.Get_vsize();
+    unsigned m = M.Get_hsize();
+    for(unsigned i=0;i<n;i++)
+        for(unsigned j=0;j<m;j++)
+            M.Add(i, j, r_random(min,max));
+}
+
+double r_random(double min, double max){
+    std::random_device rd;
+    std::uniform_real_distribution<double> uid(min, max);
+    return uid(rd);
+}
+
+Matrix transpose(Matrix &M){
+    unsigned n = M.Get_vsize();
+    unsigned m = M.Get_hsize();
+    Matrix A(M.Get_hsize(),M.Get_vsize());
+    for(unsigned i=0;i<n;i++)
+        for (unsigned j=0; j<m; j++)
+            A.Add(j,i,M.Get(i,j));
+    return A;
+}
+
+void Matrix::clear(){
+    for(unsigned i=0;i<vsize;i++)
+        for(unsigned j=0;j<hsize;j++)
+            M[i][j]=0.0;
+}
+
+void Matrix::insertDiag(double A){
+    for(unsigned i = 0; i<vsize; ++i)
+        for(unsigned j = 0; j<hsize; ++j){
+            if(i==j) M[i][j]=A;
+    }
+}
+
+double Matrix::norm(){
+    unsigned n=vsize;
+    unsigned m=hsize;
+    double max = 0;
+    for (unsigned i=0; i<n; ++i){
+        double tmp=0;
+        for (int j=0; j<m; ++j)
+            tmp+=fabs(M[i][j]);
+        if (tmp>max)max=tmp;
+    }
+    return max;
+}
+
 
 
 #endif /* Matrix_cpp */

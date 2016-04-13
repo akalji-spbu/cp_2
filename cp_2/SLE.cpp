@@ -11,6 +11,9 @@
 #define SLE_cpp
 #include "SLE.h"
 
+
+//PLU METHODS
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 void P1P2LU(Matrix &A, Matrix &P, Matrix &Q, Matrix &L, Matrix &U, unsigned &rank, unsigned &swaps){
     swaps = 0;
     unsigned n = A.Get_vsize();
@@ -227,5 +230,127 @@ double cond(Matrix& A, Matrix& inverse){
     }
     return num1*num2;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//END PLU METHODS
+
+
+//QR METHODS
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+void QR(Matrix &A, Matrix &Q, Matrix &R){
+    unsigned n = A.Get_vsize();
+    unsigned m = A.Get_hsize();
+    Q.insertDiag(1);
+    for(int i = 0; i < n; i++){
+        for(int j = i+1; j<m; j++){
+            Matrix tmpQ(n, m);
+            tmpQ.insertDiag(1);
+            if (fabs(R.Get(j,i)) < 1e-15) continue;
+            double cos = R.Get(i,i) / sqrt(pow(R.Get(i,i), 2) + pow(R.Get(j,i), 2));
+            double sin = R.Get(j,i) / sqrt(pow(R.Get(i,i), 2) + pow(R.Get(j,i), 2));
+            tmpQ.Add(i,i,cos);
+            tmpQ.Add(i,j,sin);
+            tmpQ.Add(j,i,-sin);
+            tmpQ.Add(j,j,cos);
+            Q = tmpQ*Q;
+            R = tmpQ*R;
+        }
+    }
+}
+
+Matrix QRSLE(Matrix &Q, Matrix &R, Matrix &b){
+    unsigned n = Q.Get_vsize();
+    unsigned m = Q.Get_vsize();
+    Matrix x(n,1);
+    Matrix y(n,1);
+    y = Q*b;
+    int rank = n-1;
+    while (fabs(R.Get(rank,rank)) < 1e-13) --rank;
+    for (int i = n - 1; i > rank; --i)
+        x.Add(i,0,1);
+    for (int i = rank; i >= 0; --i){
+        x.Add(i,0,y.Get(i,0));
+        for (int j = i + 1; j < m; ++j)
+            x.Add(i,0,x.Get(i,0) - x.Get(j,0) * R.Get(i,j));
+        x.Add(i,0,x.Get(i,0) /R.Get(i,i));
+    }
+    return x;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//END QR METHODS
+
+//SEIDEL METHODS
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+Matrix Seidel(Matrix &M, Matrix &b){
+    unsigned n = M.Get_vsize();
+    unsigned m = M.Get_hsize();
+    Matrix TMP(n, 1), B(n), c(n, 1), x(n, 1);
+    for (int i = 0; i < n; ++i){
+        for (int j = 0; j < m; ++j)
+            if (i == j) {
+                c.Add(i,0,b.Get(i,0)/M.Get(i,i));
+                B.Add(i,i,0);
+            }
+            else B.Add(i,j,-M.Get(i,j)/M.Get(i,i));
+    }
+    double r=0;
+    for (int i=0; i<n; ++i){
+        double tmp = 0;
+        for (int j=i+1; j<m; ++j)
+            tmp += fabs(B.Get(i,j));
+        if(tmp>r) r=tmp;
+    }
+    
+    double q=B.norm();
+    TMP=c;
+    unsigned k=0;
+    while (true){
+        
+        for (int i = 0; i < n; ++i){
+            for (int j = 0; j < n; ++j)
+                if(j < i) x.Add(i,0, x.Get(i,0)+ B.Get(i,j) * x.Get(j,0));
+                else x.Add(i,0,(x.Get(i,0)+B.Get(i,j) * TMP.Get(j,0)));
+            x.Add(i,0,(x.Get(i,0) + c.Get(i,0)));
+        }
+        k++;
+        if (fabs(r*(x-TMP).norm()/(1-q))<1e-13) break;
+        TMP = x;
+        for (int i=0; i<n; ++i)
+            x.Add(i,0,0);
+    }
+    std::cout<<"Iterations of Seidel: "<<k<<std::endl;
+    return x;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//END SEIDEL METHODS
+
+
+//JACOBI METHODS
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+Matrix Jacobi(Matrix &M, Matrix&b){
+    unsigned n = M.Get_vsize();
+    unsigned m = M.Get_hsize();
+    Matrix TMP(n, 1), B(n,n), c(n, 1), x(n, 1); //Матрицы заплнены нулями
+    for (int i=0; i<n; ++i)
+        for (int j=0; j<m; ++j)
+            if(i==j){
+                c.Add(i,0,b.Get(i,0)/M.Get(i,i));
+                B.Add(i,i,0);
+            }
+            else B.Add(i,j,(-M.Get(i,j)/M.Get(i,i)));
+    TMP = c;
+    double q = B.norm();
+    unsigned k=0;
+    while(true){
+        x = B*TMP+c;
+        double tmp = q*(x-TMP).norm()/(1-q);
+        k++;
+        if (fabs(tmp) <= 1e-13) break;
+        TMP = x;
+    }
+    std::cout<<"Iterations of Jacobi: "<<k<<std::endl;
+    return x;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//END JACOBI METHODS
 
 #endif /* SLE_cpp */

@@ -19,5 +19,14 @@ double det(Matrix &U, unsigned SwapsNum);
 void SOLE(Matrix &L, Matrix &U, Matrix &b, Matrix &x, int rank);
 void inverse(Matrix& L, Matrix& U, int rank, Matrix &inverse);
 double cond(Matrix& A, Matrix& inverse);
+double getColNorm(Matrix &M, unsigned m);
+void QR(Matrix &A, Matrix &Q, Matrix &R);
+Matrix QRSLE(Matrix &Q, Matrix &R, Matrix &b);
+bool converge(Matrix X, Matrix tmp);
+Matrix Seidel(Matrix &M, Matrix &b);
+Matrix Jacobi(Matrix &M, Matrix&b);
+double norm(Matrix &M);
+
+
 
 #endif /* SLE_hpp */
